@@ -9,6 +9,7 @@ import { Hero } from './components/Hero';
 import { Work } from './components/Work';
 import { CaseView } from './components/CaseView';
 import { Terminal } from './components/Terminal';
+import { Band } from './components/Band';
 import { Studio } from './components/Studio';
 import { Contact } from './components/Contact';
 
@@ -42,6 +43,7 @@ export default function App() {
         <Hero ready={ready} />
         <Work onOpen={openProject} />
         <Terminal onOpen={openProject} />
+        <Band />
         <Studio />
         <Contact />
       </main>

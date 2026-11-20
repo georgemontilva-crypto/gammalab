@@ -1,18 +1,39 @@
 import { useEffect, useRef } from 'react';
-import { MARK_PIECES } from '../brand/paths';
 import { prefersReducedMotion } from '../lib/scroll';
 
 const BRAND = '#FF2D55';
 const BONE = '#EFEFEF';
 
+export type FieldShape = { tone: 'bone' | 'brand'; d: string };
+export type FieldLayout = { x: number; y: number; w: number; h: number; cell: number };
+
+type Props = {
+  className?: string;
+  /** Trazos SVG que forman la figura, en las unidades de su viewBox. */
+  shapes: FieldShape[];
+  vbW: number;
+  vbH: number;
+  /** Dónde y a qué tamaño se dibuja la figura dentro del canvas. */
+  layout: (W: number, H: number) => FieldLayout;
+  /** La figura empieza a formarse cuando esto es true y el canvas está en pantalla. */
+  active: boolean;
+  /** 0 = figura formada · 1 = dispersa. Se consulta en cada fotograma. */
+  scatter: (rect: DOMRect) => number;
+};
+
 /**
- * El isotipo hecho de "píxeles" con física: vuelven a su sitio con un resorte,
- * huyen del cursor, estallan con un clic y se dispersan al hacer scroll.
+ * Una figura hecha de "píxeles" con física: vuelven a su sitio con un resorte,
+ * huyen del cursor, estallan con un clic y se dispersan según `scatter`.
+ * La usan el isotipo del hero y la franja del logotipo.
  */
-export function ParticleMark({ active }: { active: boolean }) {
+export function ParticleField({ className, shapes, vbW, vbH, layout, active, scatter }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
   const activeRef = useRef(active);
   activeRef.current = active;
+  const layoutRef = useRef(layout);
+  layoutRef.current = layout;
+  const scatterRef = useRef(scatter);
+  scatterRef.current = scatter;
 
   useEffect(() => {
     const canvas = ref.current!;
@@ -38,8 +59,7 @@ export function ParticleMark({ active }: { active: boolean }) {
     let my = -9999;
     let raf = 0;
     let running = false;
-    let visible = true;
-    let born = 0; // instante en que el logo empieza a formarse
+    let born = 0; // instante en que la figura empieza a formarse
     let built = false;
 
     const build = () => {
@@ -51,28 +71,28 @@ export function ParticleMark({ active }: { active: boolean }) {
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
 
-      const wide = W >= 900;
-      const size = Math.round(wide ? Math.min(W * 0.36, H * 0.68) : Math.min(W * 0.7, H * 0.3));
-      const cx = wide ? W * 0.74 : W * 0.5;
-      const cy = wide ? H * 0.5 : 84 + size / 2;
-      cell = Math.max(3, Math.round(size / 86));
+      const box = layoutRef.current(W, H);
+      const bw = Math.max(2, Math.round(box.w));
+      const bh = Math.max(2, Math.round(box.h));
+      cell = Math.max(2, Math.round(box.cell));
 
       const off = document.createElement('canvas');
-      off.width = off.height = size;
+      off.width = bw;
+      off.height = bh;
       const o = off.getContext('2d', { willReadFrequently: true })!;
-      o.scale(size / 655, size / 655);
-      for (const p of MARK_PIECES) {
-        o.fillStyle = p.tone === 'brand' ? '#ff0000' : '#0000ff';
-        o.fill(new Path2D(p.d));
+      o.scale(bw / vbW, bh / vbH);
+      for (const s of shapes) {
+        o.fillStyle = s.tone === 'brand' ? '#ff0000' : '#0000ff';
+        o.fill(new Path2D(s.d), 'evenodd');
       }
-      const data = o.getImageData(0, 0, size, size).data;
+      const data = o.getImageData(0, 0, bw, bh).data;
       const bone: number[] = [];
       const brand: number[] = [];
-      for (let gy = cell >> 1; gy < size; gy += cell) {
-        for (let gx = cell >> 1; gx < size; gx += cell) {
-          const i = (gy * size + gx) * 4;
+      for (let gy = cell >> 1; gy < bh; gy += cell) {
+        for (let gx = cell >> 1; gx < bw; gx += cell) {
+          const i = (gy * bw + gx) * 4;
           if (data[i + 3] < 128) continue;
-          (data[i] > data[i + 2] ? brand : bone).push(cx - size / 2 + gx, cy - size / 2 + gy);
+          (data[i] > data[i + 2] ? brand : bone).push(box.x + gx, box.y + gy);
         }
       }
       const homes = bone.concat(brand);
@@ -90,6 +110,8 @@ export function ParticleMark({ active }: { active: boolean }) {
         sx = new Float32Array(n);
         sy = new Float32Array(n);
       }
+      const cx = box.x + bw / 2;
+      const cy = box.y + bh / 2;
       const reach = Math.max(W, H);
       for (let i = 0; i < n; i++) {
         hx[i] = homes[i * 2];
@@ -113,8 +135,9 @@ export function ParticleMark({ active }: { active: boolean }) {
     const draw = (alpha: number) => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      if (alpha <= 0) return;
-      const s = cell * 0.68;
+      if (alpha <= 0 || !n) return;
+      // Con celdas muy pequeñas (teléfono) el píxel casi llena la celda para que no pierda brillo.
+      const s = cell <= 2 ? cell * 0.86 : cell * 0.68;
       const h = s / 2;
       ctx.globalAlpha = alpha;
       ctx.fillStyle = BONE;
@@ -138,8 +161,8 @@ export function ParticleMark({ active }: { active: boolean }) {
         raf = requestAnimationFrame(frame);
         return;
       }
-      const scroll = Math.min(1, Math.max(0, window.scrollY / (H * 0.85)));
-      const push = scroll * scroll * Math.max(W, H) * 0.75;
+      const sc = Math.min(1, Math.max(0, scatterRef.current(canvas.getBoundingClientRect())));
+      const push = sc * sc * Math.max(W, H) * 0.75;
       const R = Math.max(90, cell * 26);
       const R2 = R * R;
       const t = now * 0.0013;
@@ -163,7 +186,7 @@ export function ParticleMark({ active }: { active: boolean }) {
         y[i] += vy[i];
       }
       const fadeIn = Math.min(1, (now - born) / 500);
-      draw(fadeIn * (1 - scroll * 0.9));
+      draw(fadeIn * (1 - sc * 0.9));
       raf = requestAnimationFrame(frame);
     };
 
@@ -188,7 +211,7 @@ export function ParticleMark({ active }: { active: boolean }) {
     const onDown = (e: PointerEvent) => {
       const r = canvas.getBoundingClientRect();
       if (e.clientY > r.bottom || e.clientY < r.top) return;
-      if ((e.target as Element).closest('a, button')) return;
+      if ((e.target as Element).closest('a, button, input')) return;
       const px = e.clientX - r.left;
       const py = e.clientY - r.top;
       const B = Math.max(260, cell * 90);
@@ -213,8 +236,7 @@ export function ParticleMark({ active }: { active: boolean }) {
     });
     ro.observe(canvas);
     const io = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      if (visible) start();
+      if (entry.isIntersecting) start();
       else stop();
     });
     io.observe(canvas);
@@ -230,7 +252,9 @@ export function ParticleMark({ active }: { active: boolean }) {
       window.removeEventListener('pointerdown', onDown);
       document.documentElement.removeEventListener('pointerleave', onLeave);
     };
+    // La figura no cambia durante la vida del componente.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <canvas ref={ref} className="hero__canvas" aria-hidden="true" />;
+  return <canvas ref={ref} className={className} aria-hidden="true" />;
 }

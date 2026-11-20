@@ -1869,6 +1869,42 @@ html.has-cursor * {
   }
 }
 
+/* ───────────────────────── Franja del logotipo ───────────────────────── */
+.band {
+  position: relative;
+  height: clamp(110px, 25vw, 360px);
+}
+
+.band__grid {
+  position: absolute;
+  inset: -40px 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(ellipse 60% 62% at 50% 50%, #000 0, transparent 82%);
+  mask-image: radial-gradient(ellipse 60% 62% at 50% 50%, #000 0, transparent 82%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* El canvas sobresale de la franja para que los píxeles puedan volar sin cortarse. */
+.band__canvas {
+  position: absolute;
+  left: 0;
+  top: -110px;
+  width: 100%;
+  height: calc(100% + 220px);
+  pointer-events: none;
+}
+
+.section.term {
+  padding-bottom: clamp(36px, 7vh, 84px);
+}
+
+.section.studio {
+  padding-top: clamp(36px, 7vh, 84px);
+}
+
 /* ───────────────────────── Estudio ───────────────────────── */
 .studio {
   display: grid;
