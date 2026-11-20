@@ -1092,6 +1092,10 @@ html.has-cursor * {
   .hud__actions .btn {
     padding-inline: 1em;
   }
+  /* En teléfono el enlace directo vive dentro de la ficha: aquí solo cabe «Abrir». */
+  .hud__actions .btn:not(.btn--solid) {
+    display: none;
+  }
   .rail {
     display: none;
   }
