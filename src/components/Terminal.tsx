@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type Reac
 import type { OpenProject } from '../App';
 import { COPY } from '../data/copy';
 import { PROJECTS, type Lang } from '../data/projects';
-import { SITE, STACK, whatsappLabel, whatsappLink } from '../data/site';
+import { SITE, STACK, whatsappLink } from '../data/site';
 import { useI18n } from '../lib/i18n';
 import { prefersReducedMotion, scrollToTarget } from '../lib/scroll';
 
@@ -122,7 +122,7 @@ export function Terminal({ onOpen }: { onOpen: OpenProject }) {
           if (SITE.whatsapp)
             rows.push(
               <a href={whatsappLink(COPY.contact.whatsappText[l])} target="_blank" rel="noopener noreferrer">
-                WhatsApp {whatsappLabel()}
+                {COPY.contact.whatsapp[l]} (WhatsApp)
               </a>,
             );
           scrollToTarget('#contacto', 1.6);

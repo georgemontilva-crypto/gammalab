@@ -2139,14 +2139,10 @@ html.has-cursor * {
     flex-direction: column;
   }
   .contact__actions .btn {
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 2px 0.8em;
+    justify-content: center;
     max-width: 100%;
-    padding: 0.85em 1.3em;
-    border-radius: 28px;
-    font-size: 14px;
-    white-space: normal;
+    min-height: 58px;
+    font-size: 15px;
   }
   .contact__mark {
     right: -34vw;
