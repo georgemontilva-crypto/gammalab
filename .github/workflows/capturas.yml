@@ -1,0 +1,45 @@
+name: Capturas de proyectos
+
+# Se lanza a mano desde la pestaña Actions → "Capturas de proyectos" → Run workflow.
+# Visita cada web de src/data/projects.json, guarda las capturas en src/shots
+# y hace commit. Railway vuelve a desplegar solo con ese commit.
+on:
+  workflow_dispatch:
+    inputs:
+      slugs:
+        description: 'Slugs separados por espacio (vacío = todos los proyectos)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  capturas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Instalar Playwright y sharp
+        run: |
+          npm install --no-save playwright sharp
+          npx playwright install --with-deps chromium
+      - name: Capturar
+        env:
+          SLUGS: ${{ inputs.slugs }}
+        run: node scripts/shots.mjs $SLUGS
+      - name: Guardar capturas en el repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/shots
+          if git diff --cached --quiet; then
+            echo "No hay capturas nuevas."
+          else
+            git commit -m "Capturas de proyectos actualizadas"
+            git pull --rebase
+            git push
+          fi

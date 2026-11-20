@@ -1,0 +1,146 @@
+[
+  {
+    "slug": "isekai-world",
+    "name": "Isekai World",
+    "url": "https://isekaiworld.co",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Tienda de figuras impresas en 3D de anime y gaming, con catálogo, carrito y panel de administración propios.",
+      "en": "A store for 3D-printed anime and gaming figures, with its own catalog, cart and admin panel."
+    },
+    "tags": ["E-commerce", "React", "tRPC", "MySQL"],
+    "hue": 285
+  },
+  {
+    "slug": "brighter-days-labs",
+    "name": "Brighter Days Labs",
+    "url": "https://brighterdayslabs.com",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Tienda de compuestos de investigación con un asistente de IA integrado que responde a los clientes.",
+      "en": "A research-compounds store with a built-in AI assistant that answers customers."
+    },
+    "tags": ["E-commerce", "Chatbot IA"],
+    "hue": 45
+  },
+  {
+    "slug": "potted",
+    "name": "PotTed",
+    "url": "https://pottedusa.com",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Rediseño completo de la tienda de la marca, pensado para comprar rápido desde el teléfono.",
+      "en": "A full redesign of the brand's store, built for fast buying on a phone."
+    },
+    "tags": ["E-commerce", "Rediseño"],
+    "hue": 140
+  },
+  {
+    "slug": "classic-innovation",
+    "name": "Classic Innovation",
+    "url": "https://classicinnovationca.com",
+    "kind": { "es": "Sitio de empresa", "en": "Company site" },
+    "blurb": {
+      "es": "Sitio de una empresa de instalación de tile, con galería de trabajos terminados.",
+      "en": "A site for a tile installation company, with a gallery of finished work."
+    },
+    "tags": ["Corporativo", "Galería"],
+    "hue": 28
+  },
+  {
+    "slug": "ddk-roofing",
+    "name": "DDK Roofing",
+    "url": "https://ddkroofing.com",
+    "kind": { "es": "Landing", "en": "Landing page" },
+    "blurb": {
+      "es": "Landing para una empresa de techos: servicios claros y contacto en un solo paso.",
+      "en": "A landing page for a roofing company: clear services and one-step contact."
+    },
+    "tags": ["Landing", "Servicios"],
+    "hue": 210
+  },
+  {
+    "slug": "gss-smoke-shop",
+    "name": "GSS Smoke Shop",
+    "url": "https://gssshop.store",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Tienda online con catálogo amplio, filtros y pago en línea.",
+      "en": "An online store with a large catalog, filters and online checkout."
+    },
+    "tags": ["E-commerce"],
+    "hue": 0
+  },
+  {
+    "slug": "faded",
+    "name": "Faded",
+    "url": "https://fadedvapes.com",
+    "kind": { "es": "Catálogo de marca", "en": "Brand catalog" },
+    "blurb": {
+      "es": "Catálogo informativo de la marca, reconstruido desde cero en código propio.",
+      "en": "The brand's product catalog, rebuilt from scratch in custom code."
+    },
+    "tags": ["Catálogo", "React", "Railway"],
+    "hue": 265
+  },
+  {
+    "slug": "magic-puff",
+    "name": "Magic Puff",
+    "url": "https://magicpuffbrand.com",
+    "kind": { "es": "Sitio de marca", "en": "Brand site" },
+    "blurb": {
+      "es": "Sitio de marca con carruseles de producto hechos a medida.",
+      "en": "A brand site with custom-built product carousels."
+    },
+    "tags": ["WordPress", "Marca"],
+    "hue": 320
+  },
+  {
+    "slug": "peptiva-supplies",
+    "name": "Peptiva Supplies",
+    "url": "https://peptivasupplies.com",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Tienda de péptidos de investigación, con trabajo de seguridad y rendimiento.",
+      "en": "A research-peptides store, with security and performance work."
+    },
+    "tags": ["E-commerce", "WooCommerce"],
+    "hue": 190
+  },
+  {
+    "slug": "glp-biotech",
+    "name": "GLP Biotech",
+    "url": "https://glpbiotech.com",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Tienda de compuestos de investigación con verificación de acceso antes de entrar.",
+      "en": "A research-compounds store with an access check before entering."
+    },
+    "tags": ["WordPress", "E-commerce"],
+    "hue": 165
+  },
+  {
+    "slug": "pastinos",
+    "name": "Pastinos",
+    "url": "https://pastinospastasyvinos.com",
+    "kind": { "es": "Restaurante", "en": "Restaurant" },
+    "blurb": {
+      "es": "Web de un restaurante de pastas y vinos: carta, ambiente y reservas.",
+      "en": "A website for a pasta and wine restaurant: menu, atmosphere and bookings."
+    },
+    "tags": ["Restaurante", "Menú"],
+    "hue": 12
+  },
+  {
+    "slug": "inteira",
+    "name": "Inteira",
+    "url": "https://inteira.app",
+    "kind": { "es": "Plataforma", "en": "Platform" },
+    "blurb": {
+      "es": "Plataforma de telemedicina y asesoría para México.",
+      "en": "A telemedicine and advisory platform for Mexico."
+    },
+    "tags": ["Plataforma", "Salud"],
+    "hue": 230
+  }
+]
