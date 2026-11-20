@@ -117,6 +117,7 @@ export const COPY = {
     ),
     email: c('Enviar correo', 'Send email'),
     whatsapp: c('Escribir por WhatsApp', 'Message on WhatsApp'),
+    whatsappText: c('Hola, quiero hablar de un proyecto.', "Hi, I'd like to talk about a project."),
     github: c('Ver GitHub', 'See GitHub'),
     instagram: c('Ver Instagram', 'See Instagram'),
   },

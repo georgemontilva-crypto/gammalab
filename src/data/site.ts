@@ -7,10 +7,18 @@ export const SITE = {
   /** Correo de contacto, p. ej. "hola@tudominio.com". */
   email: '',
   /** WhatsApp con código de país y solo números, p. ej. "573001234567". */
-  whatsapp: '',
-  github: 'https://github.com/georgemontilva-crypto',
+  whatsapp: '573023169089',
+  github: '',
   instagram: '',
 };
+
+/** Enlace de WhatsApp con un mensaje ya escrito. */
+export const whatsappLink = (text: string) =>
+  `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text)}`;
+
+/** "573023169089" → "+57 302 316 9089" */
+export const whatsappLabel = () =>
+  SITE.whatsapp.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})$/, '+$1 $2 $3 $4').replace(/^(?!\+)/, '+');
 
 export const STACK = [
   'React', 'TypeScript', 'Vite', 'Node.js', 'tRPC', 'Drizzle ORM', 'MySQL',

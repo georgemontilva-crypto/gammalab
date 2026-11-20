@@ -1,6 +1,6 @@
 import { Logo, Mark } from '../brand/Logo';
 import { COPY } from '../data/copy';
-import { SITE } from '../data/site';
+import { SITE, whatsappLabel, whatsappLink } from '../data/site';
 import { useI18n } from '../lib/i18n';
 import { scrollToTarget } from '../lib/scroll';
 
@@ -9,9 +9,9 @@ export function Contact() {
   const links = [
     SITE.email && { href: `mailto:${SITE.email}`, label: t(COPY.contact.email), detail: SITE.email, solid: true },
     SITE.whatsapp && {
-      href: `https://wa.me/${SITE.whatsapp}`,
+      href: whatsappLink(t(COPY.contact.whatsappText)),
       label: t(COPY.contact.whatsapp),
-      detail: `+${SITE.whatsapp}`,
+      detail: whatsappLabel(),
       solid: !SITE.email,
     },
     SITE.github && { href: SITE.github, label: t(COPY.contact.github), detail: '', solid: !SITE.email && !SITE.whatsapp },
