@@ -21,6 +21,6 @@ export const whatsappLabel = () =>
   SITE.whatsapp.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})$/, '+$1 $2 $3 $4').replace(/^(?!\+)/, '+');
 
 export const STACK = [
-  'React', 'TypeScript', 'Vite', 'Node.js', 'tRPC', 'Drizzle ORM', 'MySQL',
-  'Railway', 'Cloudflare R2', 'Resend', 'Stripe', 'Shopify', 'WordPress', 'Tauri',
+  'React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js', 'tRPC', 'Drizzle ORM', 'MySQL',
+  'Railway', 'Cloudflare R2', 'Resend', 'Stripe', 'WebGL', 'PWA', 'Tauri', 'Claude API',
 ];
