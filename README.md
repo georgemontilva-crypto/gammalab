@@ -45,8 +45,11 @@ npm run shots                 # todos
 npm run shots -- potted faded # solo esos slugs
 ```
 
-Si una web abre con una ventana de edad o de cookies que el script no cierra,
-añade al proyecto `"shotClicks": ["text=Yes"]` con el selector del botón.
+Opciones por proyecto en `projects.json`, para casos difíciles:
+
+- `"shotClicks": ["text=Yes"]`: botones o casillas que hay que pulsar, en orden, antes de capturar.
+- `"shotGate": "hide"`: en vez de pulsar el aviso de entrada, lo oculta.
+- `"shotSkip": true`: no capturar ese proyecto (se muestra la portada generada).
 
 ## Despliegue en Railway
 

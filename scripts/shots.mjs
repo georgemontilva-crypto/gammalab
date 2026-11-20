@@ -17,7 +17,8 @@ const ROOT = new URL('..', import.meta.url);
 const OUT = fileURLToPath(new URL('src/shots/', ROOT));
 const projects = JSON.parse(await readFile(new URL('src/data/projects.json', ROOT), 'utf8'));
 const only = process.argv.slice(2).filter(Boolean);
-const list = only.length ? projects.filter((p) => only.includes(p.slug)) : projects;
+// Los proyectos con "shotSkip": true solo se capturan si se piden por su slug.
+const list = only.length ? projects.filter((p) => only.includes(p.slug)) : projects.filter((p) => !p.shotSkip);
 
 // Botones típicos de ventanas de edad, cookies y avisos.
 const GATE =

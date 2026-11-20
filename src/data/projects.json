@@ -93,7 +93,8 @@
       "en": "A brand site with custom-built product carousels."
     },
     "tags": ["WordPress", "Marca"],
-    "hue": 320
+    "hue": 320,
+    "shotSkip": true
   },
   {
     "slug": "peptiva-supplies",
@@ -105,7 +106,8 @@
       "en": "A research-peptides store, with security and performance work."
     },
     "tags": ["E-commerce", "WooCommerce"],
-    "hue": 190
+    "hue": 190,
+    "shotClicks": ["text=I confirm I am", "text=I am a qualified researcher", "text=Enter Peptiva"]
   },
   {
     "slug": "glp-biotech",

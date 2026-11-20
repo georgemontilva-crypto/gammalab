@@ -18,6 +18,8 @@ export type Project = {
   shotClicks?: string[];
   /** "hide": en vez de pulsar el aviso de entrada, el script lo oculta. */
   shotGate?: string;
+  /** true: la acción de capturas se salta este proyecto (se muestra la portada generada). */
+  shotSkip?: boolean;
 };
 
 export const PROJECTS = raw as Project[];
