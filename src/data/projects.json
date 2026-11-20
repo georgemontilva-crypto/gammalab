@@ -1,5 +1,113 @@
 [
   {
+    "slug": "krush",
+    "name": "Krush",
+    "url": "https://krush-production.up.railway.app/",
+    "kind": { "es": "Sitio de marca", "en": "Brand site" },
+    "blurb": {
+      "es": "Web de marca con la historia de la casa y la información de cada producto.",
+      "en": "A brand site with the company's story and the details of every product."
+    },
+    "tags": ["Marca", "Railway"],
+    "hue": 350
+  },
+  {
+    "slug": "wickd",
+    "name": "Wick'd",
+    "url": "https://www.wickdusa.com/",
+    "kind": { "es": "Catálogo de marca", "en": "Brand catalog" },
+    "blurb": {
+      "es": "Catálogo de la marca con todas sus líneas de producto.",
+      "en": "The brand's catalog with all of its product lines."
+    },
+    "tags": ["Catálogo", "Marca"],
+    "hue": 275
+  },
+  {
+    "slug": "krunkd",
+    "name": "Krunk'd",
+    "url": "https://www.krunkdup.com/",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Tienda de la marca con venta al público y canal mayorista.",
+      "en": "The brand's store, with retail sales and a wholesale channel."
+    },
+    "tags": ["E-commerce", "Mayorista"],
+    "hue": 95
+  },
+  {
+    "slug": "breeze",
+    "name": "Breeze",
+    "url": "https://breeze-production-c55d.up.railway.app/",
+    "kind": { "es": "Sitio de marca", "en": "Brand site" },
+    "blurb": {
+      "es": "Web de marca con dos líneas de producto, cada una con su propia identidad.",
+      "en": "A brand site with two product lines, each with its own identity."
+    },
+    "tags": ["Marca", "Railway"],
+    "hue": 200
+  },
+  {
+    "slug": "potted",
+    "name": "PotTed",
+    "url": "https://potted-production.up.railway.app/",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Rediseño completo de la tienda de la marca, pensado para comprar rápido desde el teléfono.",
+      "en": "A full redesign of the brand's store, built for fast buying on a phone."
+    },
+    "tags": ["E-commerce", "Rediseño"],
+    "hue": 140
+  },
+  {
+    "slug": "gaslight",
+    "name": "Gas Light",
+    "url": "https://gaslight-production-5cd9.up.railway.app/",
+    "kind": { "es": "Sitio de marca", "en": "Brand site" },
+    "blurb": {
+      "es": "Web informativa de la marca, con reportes de laboratorio por producto y panel de administración.",
+      "en": "An informational brand site, with lab reports per product and an admin panel."
+    },
+    "tags": ["Marca", "Reportes de laboratorio", "Panel admin"],
+    "hue": 30
+  },
+  {
+    "slug": "akx",
+    "name": "AKX",
+    "url": "https://plantas-electricas-production.up.railway.app",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Web de una marca de plantas eléctricas, con tienda y productos que se exploran en 3D.",
+      "en": "A site for a power generator brand, with a store and products you explore in 3D."
+    },
+    "tags": ["E-commerce", "3D"],
+    "hue": 50
+  },
+  {
+    "slug": "panter",
+    "name": "Panter",
+    "url": "https://panter-production-a3720c1a.up.railway.app",
+    "kind": { "es": "App web", "en": "Web app" },
+    "blurb": {
+      "es": "Aplicación para una arena gamer: programa de fidelidad, tarjeta con QR y gestión del local.",
+      "en": "An app for a gaming arena: loyalty program, QR card and venue management."
+    },
+    "tags": ["PWA", "Fidelidad"],
+    "hue": 15
+  },
+  {
+    "slug": "red-level",
+    "name": "Red Level",
+    "url": "https://redlevelsoftware-production.up.railway.app/",
+    "kind": { "es": "Plataforma", "en": "Platform" },
+    "blurb": {
+      "es": "Web de un launcher de videojuegos para Windows que reúne todas tus bibliotecas en un solo lugar.",
+      "en": "The site for a Windows game launcher that brings all your libraries together in one place."
+    },
+    "tags": ["Launcher", "Tauri"],
+    "hue": 0
+  },
+  {
     "slug": "isekai-world",
     "name": "Isekai World",
     "url": "https://isekaiworld.co",
@@ -22,18 +130,6 @@
     },
     "tags": ["E-commerce", "Chatbot IA"],
     "hue": 45
-  },
-  {
-    "slug": "potted",
-    "name": "PotTed",
-    "url": "https://pottedusa.com",
-    "kind": { "es": "Tienda online", "en": "Online store" },
-    "blurb": {
-      "es": "Rediseño completo de la tienda de la marca, pensado para comprar rápido desde el teléfono.",
-      "en": "A full redesign of the brand's store, built for fast buying on a phone."
-    },
-    "tags": ["E-commerce", "Rediseño"],
-    "hue": 140
   },
   {
     "slug": "classic-innovation",
