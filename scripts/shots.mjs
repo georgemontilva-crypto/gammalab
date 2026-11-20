@@ -2,6 +2,7 @@
 //   <slug>.webp         portada (1280×800)
 //   <slug>-full.webp    página completa de escritorio
 //   <slug>-mobile.webp  página completa en teléfono
+//   <slug>-phone.webp   parte alta en teléfono (tarjeta de la baraja)
 //
 // Uso:  node scripts/shots.mjs            (todos)
 //       node scripts/shots.mjs potted faded   (solo esos slugs)
@@ -158,6 +159,12 @@ async function capture(browser, p) {
     const h = await pageHeight(page, 844 * 5);
     const shot = await page.screenshot({ type: 'png', fullPage: true, clip: { x: 0, y: 0, width: 390, height: h } });
     await sharp(shot).resize({ width: 780 }).webp({ quality: 70 }).toFile(`${OUT}${p.slug}-mobile.webp`);
+    // Recorte de la parte alta para la baraja de teléfono (ligero: se cargan varios a la vez).
+    await sharp(shot)
+      .extract({ left: 0, top: 0, width: 780, height: Math.min(1131, h * 2) })
+      .resize({ width: 660 })
+      .webp({ quality: 80 })
+      .toFile(`${OUT}${p.slug}-phone.webp`);
     console.log('    ✓ teléfono');
   } finally {
     await phone.close();

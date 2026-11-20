@@ -12,12 +12,14 @@ for (const [path, url] of Object.entries(files)) {
   byName.set(name, url);
 }
 
-export type Shots = { hero?: string; full?: string; mobile?: string };
+export type Shots = { hero?: string; full?: string; mobile?: string; phone?: string };
 
 export function shotsFor(slug: string): Shots {
   return {
     hero: byName.get(slug),
     full: byName.get(`${slug}-full`) ?? byName.get(slug),
     mobile: byName.get(`${slug}-mobile`),
+    // Recorte vertical y ligero para la baraja de teléfono.
+    phone: byName.get(`${slug}-phone`),
   };
 }

@@ -1,7 +1,8 @@
 # Gamma Lab
 
 Sitio del estudio: hero con el logo hecho de partículas, un túnel 3D para recorrer
-los proyectos, una terminal que funciona y contacto. React + Vite + TypeScript,
+los proyectos (en teléfono, una baraja que se desliza con el dedo), una terminal
+que funciona y contacto. React + Vite + TypeScript,
 sin base de datos.
 
 ## Comandos

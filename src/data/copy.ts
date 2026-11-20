@@ -29,6 +29,7 @@ export const COPY = {
       'Cada ventana es una web real. Sigue bajando para recorrerlas.',
       'Every window is a real website. Keep scrolling to fly through them.',
     ),
+    swipe: c('Desliza para recorrerlos. Toca uno para abrirlo.', 'Swipe to browse them. Tap one to open it.'),
     tunnel: c('Túnel', 'Tunnel'),
     list: c('Lista', 'List'),
     view: c('Vista de proyectos', 'Project view'),
