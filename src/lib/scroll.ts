@@ -20,13 +20,18 @@ export function initScroll(): Lenis {
 export const getLenis = () => lenis;
 
 export function scrollToTarget(target: string | number | HTMLElement, duration = 1.2) {
-  const immediate = prefersReducedMotion();
-  if (lenis) {
-    lenis.scrollTo(target, { duration, immediate: immediate || duration === 0, force: true });
-    return;
+  // Se resuelve a una posición absoluta con el scroll real de la ventana: tras un
+  // cambio de alto de la página, la posición que recuerda Lenis puede estar vieja.
+  let y: number;
+  if (typeof target === 'number') y = target;
+  else {
+    const el = typeof target === 'string' ? document.querySelector(target) : target;
+    if (!el) return;
+    y = Math.round(el.getBoundingClientRect().top + window.scrollY);
   }
-  if (typeof target === 'number') window.scrollTo({ top: target });
-  else (typeof target === 'string' ? document.querySelector(target) : target)?.scrollIntoView();
+  const immediate = prefersReducedMotion() || duration === 0;
+  if (lenis) lenis.scrollTo(y, { duration, immediate, force: true });
+  else window.scrollTo({ top: y });
 }
 
 let locks = 0;
