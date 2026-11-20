@@ -1771,10 +1771,6 @@ html.has-cursor * {
   color: var(--bone);
 }
 
-.term__line--err {
-  color: var(--brand);
-}
-
 .term__ps1 {
   margin-right: 0.8em;
   color: var(--brand);
@@ -1803,19 +1799,11 @@ html.has-cursor * {
   color: #6f6470;
 }
 
-.term__help div {
-  display: grid;
-  grid-template-columns: 9.5rem 1fr;
-  gap: 12px;
-}
-
-.term__help dt {
-  color: var(--bone);
-}
-
 .term__ls button {
   display: grid;
-  grid-template-columns: 2.2rem minmax(0, 15rem) 1fr;
+  grid-template-columns: 2.2rem minmax(0, 13rem) 1fr;
+  min-height: 30px;
+  align-items: center;
   gap: 8px;
   width: 100%;
   padding: 2px 0;
@@ -1856,10 +1844,10 @@ html.has-cursor * {
 }
 
 .term__chips button {
-  min-height: 38px;
-  padding: 0 1em;
+  min-height: 42px;
+  padding: 0 1.1em;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 999px;
   font-size: 13px;
   color: var(--mute);
   transition:
@@ -1873,11 +1861,6 @@ html.has-cursor * {
 }
 
 @media (max-width: 560px) {
-  .term__help div {
-    grid-template-columns: 1fr;
-    gap: 0;
-    margin-bottom: 6px;
-  }
   .term__ls button {
     grid-template-columns: 2.2rem 1fr;
   }

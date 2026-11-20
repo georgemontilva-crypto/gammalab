@@ -5,7 +5,7 @@ const c = (es: string, en: string): L10n => ({ es, en });
 export const COPY = {
   nav: {
     work: c('Proyectos', 'Projects'),
-    terminal: c('Terminal', 'Terminal'),
+    terminal: c('Preguntas', 'Ask'),
     studio: c('Estudio', 'Studio'),
     contact: c('Contacto', 'Contact'),
     menu: c('Menú', 'Menu'),
@@ -57,10 +57,18 @@ export const COPY = {
     keys: c('Esc cierra. Las flechas cambian de proyecto.', 'Esc closes. Arrow keys switch project.'),
   },
   term: {
-    title: c('Pregúntale a la terminal.', 'Ask the terminal.'),
-    sub: c('Funciona de verdad: escribe un comando o toca uno de abajo.', 'It really works: type a command or tap one below.'),
-    placeholder: c('escribe un comando', 'type a command'),
-    inputLabel: c('Comando', 'Command'),
+    title: c('Pregúntanos lo que quieras.', 'Ask us anything.'),
+    sub: c('Escribe tu pregunta o toca una de las de abajo.', 'Type your question or tap one of the ones below.'),
+    hello: c('Hola. ¿Qué quieres saber del estudio?', 'Hi. What would you like to know about the studio?'),
+    placeholder: c('escribe tu pregunta', 'type your question'),
+    inputLabel: c('Tu pregunta', 'Your question'),
+    chips: [
+      c('¿Quiénes son?', 'Who are you?'),
+      c('¿Qué hacen?', 'What do you do?'),
+      c('Ver proyectos', 'See projects'),
+      c('¿Con qué trabajan?', 'What do you work with?'),
+      c('Contacto', 'Contact'),
+    ],
   },
   studio: {
     title: c('Un estudio pequeño que escribe su propio código.', 'A small studio that writes its own code.'),

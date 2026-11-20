@@ -1,40 +1,49 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import type { OpenProject } from '../App';
 import { COPY } from '../data/copy';
-import { PROJECTS, domainOf, type Lang } from '../data/projects';
+import { PROJECTS, type Lang } from '../data/projects';
 import { SITE, STACK } from '../data/site';
 import { useI18n } from '../lib/i18n';
 import { prefersReducedMotion, scrollToTarget } from '../lib/scroll';
 
-type Line = { id: number; kind: 'in' | 'out' | 'err'; body: ReactNode };
-
-const COMMANDS = ['help', 'ls', 'open', 'visit', 'whoami', 'stack', 'services', 'contact', 'lang', 'clear'];
-const ALIASES: Record<string, string> = {
-  ayuda: 'help', '?': 'help',
-  proyectos: 'ls', projects: 'ls', dir: 'ls',
-  abrir: 'open', cd: 'open',
-  visitar: 'visit',
-  about: 'whoami', estudio: 'whoami', studio: 'whoami',
-  servicios: 'services',
-  contacto: 'contact',
-  idioma: 'lang',
-  cls: 'clear', limpiar: 'clear',
-};
-const CHIPS = ['help', 'ls', 'open 1', 'whoami', 'stack', 'contact'];
+type Line = { id: number; kind: 'in' | 'out'; body: ReactNode };
+type Answer = ReactNode[];
 
 const tx = (lang: Lang, es: string, en: string) => (lang === 'es' ? es : en);
 
-function findProject(arg: string) {
-  if (!arg) return -1;
-  const n = Number(arg);
-  if (Number.isInteger(n) && n >= 1 && n <= PROJECTS.length) return n - 1;
-  const q = arg.toLowerCase().replace(/\s+/g, '-');
-  let i = PROJECTS.findIndex((p) => p.slug === q);
-  if (i < 0) i = PROJECTS.findIndex((p) => p.slug.startsWith(q) || p.name.toLowerCase().startsWith(arg.toLowerCase()));
-  return i;
+/** Minúsculas, sin acentos ni signos: "¿Quiénes son?" → "quienes son". */
+const normalize = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9' ]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const PROJECT_KEYS = PROJECTS.map((p) => normalize(p.name));
+
+function findProject(q: string) {
+  const n = q.match(/\b(\d{1,2})\b/);
+  if (n && /\b(open|abrir|abre|ver|proyecto|project|visit|visitar)\b/.test(q)) {
+    const i = Number(n[1]) - 1;
+    if (i >= 0 && i < PROJECTS.length) return i;
+  }
+  return PROJECT_KEYS.findIndex((k) => q.includes(k) || q.includes(k.replace(/[' ]/g, '')));
 }
 
-/** Una terminal que funciona: lista proyectos, los abre, cambia el idioma… */
+// Cada tema se reconoce por palabras sueltas, en español o en inglés.
+const TOPICS: { id: string; re: RegExp }[] = [
+  { id: 'contact', re: /contact|escrib|correo|email|mail|whatsapp|telefono|llamar|hablar|cotiz|presupuesto|precio|cuanto|cuesta|price|quote|cost|hire|contrat/ },
+  { id: 'projects', re: /proyecto|project|portafolio|portfolio|trabajos|clientes|clients|webs|sitios|sites|\bls\b|lista|list/ },
+  { id: 'services', re: /servicio|service|que hacen|que hace|hacen|ofrecen|offer|what do you do|do you do|pueden hacer|desarrollan|tienda|app|diseno|design|branding/ },
+  { id: 'stack', re: /stack|tecnolog|technolog|herramienta|tools|con que|work with|lenguaje|language|framework|react/ },
+  { id: 'about', re: /quien|who|about|sobre|estudio|studio|ustedes|whoami|gamma|experiencia|experience|anos|years/ },
+  { id: 'hello', re: /^(hola|hello|hi|hey|buenas|buenos dias|que tal)\b/ },
+  { id: 'help', re: /help|ayuda|opciones|options|comandos|commands|que puedo|what can/ },
+];
+
+/** Una terminal a la que se le pregunta con palabras normales. */
 export function Terminal({ onOpen }: { onOpen: OpenProject }) {
   const { t, lang, setLang } = useI18n();
   const [lines, setLines] = useState<Line[]>([]);
@@ -48,95 +57,67 @@ export function Terminal({ onOpen }: { onOpen: OpenProject }) {
   const langRef = useRef(lang);
   langRef.current = lang;
 
-  const exec = useCallback(
-    (name: string, arg: string): { kind: Line['kind']; body: ReactNode }[] => {
+  const answer = useCallback(
+    (raw: string): Answer => {
       const l = langRef.current;
-      const out = (b: ReactNode) => ({ kind: 'out' as const, body: b });
-      const err = (b: ReactNode) => ({ kind: 'err' as const, body: b });
-      switch (name) {
-        case 'help':
+      const q = normalize(raw);
+
+      if (/\b(english|ingles)\b/.test(q) || q === 'lang en') {
+        setLang('en');
+        return ['Language: English.'];
+      }
+      if (/\b(espanol|spanish)\b/.test(q) || q === 'lang es') {
+        setLang('es');
+        return ['Idioma: español.'];
+      }
+
+      const pi = findProject(q);
+      if (pi >= 0) {
+        const p = PROJECTS[pi];
+        onOpen(p.slug);
+        return [tx(l, `Abriendo ${p.name}…`, `Opening ${p.name}…`)];
+      }
+
+      switch (TOPICS.find((topic) => topic.re.test(q))?.id) {
+        case 'about':
           return [
-            out(
-              <dl className="term__help">
-                {[
-                  ['ls', tx(l, 'lista los proyectos', 'list the projects')],
-                  ['open <n>', tx(l, 'abre la ficha de un proyecto', "open a project's page")],
-                  ['visit <n>', tx(l, 'abre el sitio en otra pestaña', 'open the site in a new tab')],
-                  ['whoami', tx(l, 'quiénes somos', 'who we are')],
-                  ['stack', tx(l, 'con qué trabajamos', 'what we work with')],
-                  ['services', tx(l, 'qué hacemos', 'what we do')],
-                  ['contact', tx(l, 'cómo escribirnos', 'how to reach us')],
-                  ['lang es|en', tx(l, 'cambia el idioma', 'switch language')],
-                  ['clear', tx(l, 'limpia la pantalla', 'clear the screen')],
-                ].map(([k, v]) => (
-                  <div key={k}>
-                    <dt>{k}</dt>
-                    <dd>{v}</dd>
-                  </div>
-                ))}
-              </dl>,
+            tx(
+              l,
+              `${SITE.name} es un estudio de desarrollo con ${SITE.years} años de trayectoria. Diseñamos y programamos tiendas online, plataformas y sitios de marca a medida.`,
+              `${SITE.name} is a development studio with ${SITE.years} years of experience. We design and build custom online stores, platforms and brand sites.`,
             ),
           ];
-        case 'ls':
+        case 'services':
+          return COPY.studio.services.map((s) => (
+            <>
+              <b>{s.name[l]}.</b> {s.text[l]}
+            </>
+          ));
+        case 'projects':
           return [
-            out(
-              <ul className="term__ls">
-                {PROJECTS.map((p, i) => (
-                  <li key={p.slug}>
-                    <button type="button" onClick={() => onOpen(p.slug)}>
-                      <span>{String(i + 1).padStart(2, '0')}</span>
-                      <b>{p.slug}</b>
-                      <em>{p.kind[l]}</em>
-                    </button>
-                  </li>
-                ))}
-              </ul>,
-            ),
-            out(tx(l, 'Escribe open y el número, o toca un proyecto.', 'Type open and the number, or tap a project.')),
-          ];
-        case 'open':
-        case 'visit': {
-          const i = findProject(arg);
-          if (i < 0)
-            return [
-              err(
-                tx(
-                  l,
-                  `No hay ningún proyecto "${arg || '?'}". Usa ls para ver la lista.`,
-                  `There is no project "${arg || '?'}". Use ls to see the list.`,
-                ),
-              ),
-            ];
-          const p = PROJECTS[i];
-          if (name === 'open') {
-            onOpen(p.slug);
-            return [out(tx(l, `Abriendo ${p.name}…`, `Opening ${p.name}…`))];
-          }
-          window.open(p.url, '_blank', 'noopener,noreferrer');
-          return [out(`→ ${domainOf(p.url)}`)];
-        }
-        case 'whoami':
-          return [
-            out(
-              tx(
-                l,
-                `${SITE.name}: un estudio de desarrollo con ${SITE.years} años construyendo tiendas, plataformas y webs de marca. Todo en código propio, sin plantillas.`,
-                `${SITE.name}: a development studio with ${SITE.years} years building stores, platforms and brand sites. All custom code, no templates.`,
-              ),
-            ),
+            <ul className="term__ls">
+              {PROJECTS.map((p, i) => (
+                <li key={p.slug}>
+                  <button type="button" onClick={() => onOpen(p.slug)}>
+                    <span>{String(i + 1).padStart(2, '0')}</span>
+                    <b>{p.name}</b>
+                    <em>{p.kind[l]}</em>
+                  </button>
+                </li>
+              ))}
+            </ul>,
+            tx(l, 'Toca un proyecto para abrirlo.', 'Tap a project to open it.'),
           ];
         case 'stack':
-          return [out(<span className="term__stack">{STACK.map((s) => <i key={s}>{s}</i>)}</span>)];
-        case 'services':
-          return COPY.studio.services.map((s) =>
-            out(
-              <>
-                <b>{s.name[l]}</b>: {s.text[l]}
-              </>,
-            ),
-          );
+          return [
+            <span className="term__stack">
+              {STACK.map((s) => (
+                <i key={s}>{s}</i>
+              ))}
+            </span>,
+          ];
         case 'contact': {
-          const rows: ReactNode[] = [];
+          const rows: Answer = [];
           if (SITE.email) rows.push(<a href={`mailto:${SITE.email}`}>{SITE.email}</a>);
           if (SITE.whatsapp)
             rows.push(
@@ -144,30 +125,24 @@ export function Terminal({ onOpen }: { onOpen: OpenProject }) {
                 WhatsApp +{SITE.whatsapp}
               </a>,
             );
-          if (SITE.github)
-            rows.push(
-              <a href={SITE.github} target="_blank" rel="noopener noreferrer">
-                {SITE.github.replace('https://', '')}
-              </a>,
-            );
           scrollToTarget('#contacto', 1.6);
-          return rows.map((r) => out(r));
+          rows.push(tx(l, 'Te llevo a la sección de contacto.', 'Taking you to the contact section.'));
+          return rows;
         }
-        case 'lang': {
-          if (arg !== 'es' && arg !== 'en') return [err(tx(l, 'Uso: lang es | lang en', 'Usage: lang es | lang en'))];
-          setLang(arg);
-          return [out(arg === 'es' ? 'Idioma: español.' : 'Language: English.')];
-        }
-        case 'sudo':
-          return [err(tx(l, 'Buen intento. Aquí no hace falta ser root: prueba con help.', 'Nice try. No root needed here: try help.'))];
+        case 'hello':
+          return [
+            tx(
+              l,
+              'Hola. Pregunta por el estudio, lo que hacemos, los proyectos o cómo escribirnos.',
+              'Hi. Ask about the studio, what we do, the projects or how to reach us.',
+            ),
+          ];
         default:
           return [
-            err(
-              tx(
-                l,
-                `Comando no encontrado: ${name}. Escribe help para ver los disponibles.`,
-                `Command not found: ${name}. Type help to see what's available.`,
-              ),
+            tx(
+              l,
+              'Puedes preguntar quiénes somos, qué hacemos, con qué trabajamos o cómo escribirnos. También puedes pedir los proyectos o escribir el nombre de uno para abrirlo.',
+              'You can ask who we are, what we do, what we work with or how to reach us. You can also ask for the projects or type the name of one to open it.',
             ),
           ];
       }
@@ -177,24 +152,22 @@ export function Terminal({ onOpen }: { onOpen: OpenProject }) {
 
   const run = useCallback(
     (raw: string) => {
-      const cmd = raw.trim();
-      if (!cmd) return;
-      history.current.unshift(cmd);
+      const text = raw.trim();
+      if (!text) return;
+      history.current.unshift(text);
       hIndex.current = -1;
-      const [first, ...rest] = cmd.split(/\s+/);
-      const name = ALIASES[first.toLowerCase()] ?? first.toLowerCase();
-      if (name === 'clear') {
+      if (/^(clear|cls|limpiar|borrar)$/i.test(text)) {
         setLines([]);
         return;
       }
-      const result = exec(name, rest.join(' '));
+      const result = answer(text);
       setLines((prev) => [
-        ...prev.slice(-60),
-        { id: ++idRef.current, kind: 'in', body: cmd },
-        ...result.map((r) => ({ id: ++idRef.current, ...r })),
+        ...prev.slice(-40),
+        { id: ++idRef.current, kind: 'in', body: text },
+        ...result.map((b) => ({ id: ++idRef.current, kind: 'out' as const, body: b })),
       ]);
     },
-    [exec],
+    [answer],
   );
 
   useEffect(() => {
@@ -202,7 +175,7 @@ export function Terminal({ onOpen }: { onOpen: OpenProject }) {
     if (el) el.scrollTop = el.scrollHeight;
   }, [lines]);
 
-  // Demostración: la primera vez que la terminal entra en pantalla, se escribe sola.
+  // Demostración: la primera vez que entra en pantalla, se escribe sola una pregunta.
   useEffect(() => {
     const el = section.current!;
     let timers: number[] = [];
@@ -210,19 +183,19 @@ export function Terminal({ onOpen }: { onOpen: OpenProject }) {
       ([entry]) => {
         if (!entry.isIntersecting) return;
         io.disconnect();
-        const demo = 'whoami';
+        const demo = COPY.term.chips[0][langRef.current];
         if (prefersReducedMotion()) {
           run(demo);
           return;
         }
         [...demo].forEach((_, i) => {
-          timers.push(window.setTimeout(() => setValue(demo.slice(0, i + 1)), 350 + i * 95));
+          timers.push(window.setTimeout(() => setValue(demo.slice(0, i + 1)), 350 + i * 70));
         });
         timers.push(
           window.setTimeout(() => {
             setValue('');
             run(demo);
-          }, 350 + demo.length * 95 + 260),
+          }, 350 + demo.length * 70 + 260),
         );
       },
       { threshold: 0.45 },
@@ -247,21 +220,6 @@ export function Terminal({ onOpen }: { onOpen: OpenProject }) {
       if (!h.length) return;
       hIndex.current = Math.max(-1, Math.min(h.length - 1, hIndex.current + (e.key === 'ArrowUp' ? 1 : -1)));
       setValue(hIndex.current < 0 ? '' : h[hIndex.current]);
-    } else if (e.key === 'Tab' && value.trim()) {
-      const [first, ...rest] = value.split(/\s+/);
-      if (!rest.length) {
-        const hit = COMMANDS.find((c) => c.startsWith(first.toLowerCase()));
-        if (hit) {
-          e.preventDefault();
-          setValue(hit === 'open' || hit === 'visit' || hit === 'lang' ? `${hit} ` : hit);
-        }
-      } else {
-        const hit = PROJECTS.find((p) => p.slug.startsWith(rest.join('-').toLowerCase()));
-        if (hit) {
-          e.preventDefault();
-          setValue(`${first} ${hit.slug}`);
-        }
-      }
     }
   };
 
@@ -280,22 +238,20 @@ export function Terminal({ onOpen }: { onOpen: OpenProject }) {
       >
         <div className="term__bar">
           <i />
-          <span>gammalab: ~</span>
+          <span>gammalab</span>
         </div>
         <div className="term__body" ref={body} data-lenis-prevent role="log" aria-live="polite">
-          <p className="term__line term__line--out">
-            {tx(lang, 'Gamma Lab shell. Escribe help para empezar.', 'Gamma Lab shell. Type help to get started.')}
-          </p>
+          <p className="term__line term__line--out">{t(COPY.term.hello)}</p>
           {lines.map((l) => (
             <div key={l.id} className={`term__line term__line--${l.kind}`}>
-              {l.kind === 'in' && <span className="term__ps1">~ %</span>}
+              {l.kind === 'in' && <span className="term__ps1">&gt;</span>}
               {l.body}
             </div>
           ))}
         </div>
         <label className="term__prompt">
           <span className="term__ps1" aria-hidden="true">
-            ~ %
+            &gt;
           </span>
           <span className="sr-only">{t(COPY.term.inputLabel)}</span>
           <input
@@ -308,14 +264,14 @@ export function Terminal({ onOpen }: { onOpen: OpenProject }) {
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
-            enterKeyHint="go"
+            enterKeyHint="send"
           />
         </label>
       </div>
       <div className="term__chips">
-        {CHIPS.map((c) => (
-          <button key={c} type="button" onClick={() => run(c)}>
-            {c}
+        {COPY.term.chips.map((c) => (
+          <button key={c.es} type="button" onClick={() => run(t(c))}>
+            {t(c)}
           </button>
         ))}
       </div>
