@@ -237,6 +237,8 @@ export function Terminal({ onOpen }: { onOpen: OpenProject }) {
 
   const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
+      // Sin esto, el mismo Enter activaría el botón que reciba el foco al abrir una ficha.
+      e.preventDefault();
       run(value);
       setValue('');
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {

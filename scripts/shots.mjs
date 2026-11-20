@@ -23,7 +23,26 @@ const list = only.length ? projects.filter((p) => only.includes(p.slug)) : proje
 const GATE =
   "^(yes|sí|si|enter|entrar|i am (over )?(18|21)|i'm (over )?(18|21)|i am of legal age|yes,? i am|over (18|21)|21\\+|18\\+|i agree|agree|accept|accept all|allow all|aceptar|acepto|confirm|continue|continuar|got it|ok|soy mayor|tengo)";
 
-async function dismiss(page, extra = []) {
+// Para webs cuyo aviso no se puede cerrar con un clic: oculta lo que tape la pantalla.
+async function hideOverlays(page) {
+  await page
+    .evaluate(() => {
+      for (const el of document.querySelectorAll('body *')) {
+        const s = getComputedStyle(el);
+        if (s.position !== 'fixed' && el.tagName !== 'DIALOG') continue;
+        const r = el.getBoundingClientRect();
+        if (r.width >= innerWidth * 0.9 && r.height >= innerHeight * 0.8) el.style.setProperty('display', 'none', 'important');
+      }
+      for (const el of [document.documentElement, document.body]) {
+        el.style.setProperty('overflow', 'visible', 'important');
+        el.style.setProperty('height', 'auto', 'important');
+      }
+    })
+    .catch(() => {});
+}
+
+async function dismiss(page, extra = [], gate = 'click') {
+  if (gate === 'hide') return hideOverlays(page);
   for (const sel of extra) {
     try {
       await page.locator(sel).first().click({ timeout: 2500 });
@@ -41,21 +60,29 @@ async function dismiss(page, extra = []) {
           const s = getComputedStyle(el);
           return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && r.top < innerHeight && r.bottom > 0;
         };
+        // "Superpuesto": dentro de un diálogo o de algo fijo que no sea la cabecera del sitio.
         const inOverlay = (el) => {
+          let fixed = false;
           for (let n = el; n && n !== document.body; n = n.parentElement) {
-            if (n.tagName === 'DIALOG' || n.getAttribute('role') === 'dialog') return true;
-            if (getComputedStyle(n).position === 'fixed' && n.getBoundingClientRect().height > innerHeight * 0.3) return true;
+            if (n.tagName === 'HEADER' || n.tagName === 'NAV') return false;
+            if (n.tagName === 'DIALOG' || n.getAttribute('role') === 'dialog') fixed = true;
+            if (getComputedStyle(n).position === 'fixed') fixed = true;
           }
-          return false;
+          return fixed;
         };
-        for (const box of document.querySelectorAll('input[type=checkbox]')) {
-          if (visible(box) && inOverlay(box) && !box.checked) box.click();
+        // Casillas de confirmación (aunque el input real esté oculto tras uno dibujado).
+        for (const box of document.querySelectorAll('input[type=checkbox], input[type=radio]')) {
+          if (inOverlay(box) && !box.checked && !box.disabled) box.click();
+        }
+        for (const box of document.querySelectorAll('[role=checkbox][aria-checked=false], [role=switch][aria-checked=false]')) {
+          if (inOverlay(box) && visible(box)) box.click();
         }
         for (const el of document.querySelectorAll('button, a, [role=button], input[type=button], input[type=submit]')) {
           const text = (el.innerText || el.value || '').trim();
           if (!text || text.length > 40 || !re.test(text) || !visible(el) || !inOverlay(el)) continue;
+          if (el.disabled || el.getAttribute('aria-disabled') === 'true') continue;
           el.click();
-          return text;
+          return `${text}${el.tagName === 'A' && el.getAttribute('href') ? ` → ${el.getAttribute('href')}` : ''}`;
         }
         return null;
       }, GATE)
@@ -66,10 +93,11 @@ async function dismiss(page, extra = []) {
   }
 }
 
-async function settle(page, extra) {
+async function settle(page, p) {
   await page.waitForLoadState('networkidle', { timeout: 12000 }).catch(() => {});
   await page.waitForTimeout(1200);
-  await dismiss(page, extra);
+  await dismiss(page, p.shotClicks, p.shotGate);
+  await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
   // Recorre la página para disparar imágenes diferidas y animaciones de entrada.
   await page
     .evaluate(async () => {
@@ -83,7 +111,8 @@ async function settle(page, extra) {
     })
     .catch(() => {});
   await page.waitForTimeout(1200);
-  await dismiss(page);
+  await dismiss(page, [], p.shotGate);
+  console.log(`    página final: ${page.url()} · "${(await page.title().catch(() => '')).slice(0, 70)}"`);
 }
 
 async function pageHeight(page, cap) {
@@ -101,7 +130,7 @@ async function capture(browser, p) {
     const status = res?.status() ?? 0;
     console.log(`    estado ${status}`);
     if (status >= 400) throw new Error(`el sitio respondió ${status}`);
-    await settle(page, p.shotClicks);
+    await settle(page, p);
     const hero = await page.screenshot({ type: 'png' });
     await sharp(hero).resize(1280, 800, { fit: 'cover', position: 'top' }).webp({ quality: 80 }).toFile(`${OUT}${p.slug}.webp`);
     const h = await pageHeight(page, 7200);
@@ -124,7 +153,7 @@ async function capture(browser, p) {
   try {
     const page = await phone.newPage();
     await page.goto(p.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
-    await settle(page, p.shotClicks);
+    await settle(page, p);
     const h = await pageHeight(page, 844 * 5);
     const shot = await page.screenshot({ type: 'png', fullPage: true, clip: { x: 0, y: 0, width: 390, height: h } });
     await sharp(shot).resize({ width: 780 }).webp({ quality: 70 }).toFile(`${OUT}${p.slug}-mobile.webp`);

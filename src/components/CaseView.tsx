@@ -76,8 +76,10 @@ export function CaseView({ index, origin, onClose, onNavigate }: Props) {
   useEffect(() => {
     lockScroll(true);
     const previous = document.activeElement as HTMLElement | null;
-    closeBtn.current?.focus({ preventScroll: true });
+    // Un fotograma después: la tecla que abrió la ficha no debe activar también «Cerrar».
+    const raf = requestAnimationFrame(() => closeBtn.current?.focus({ preventScroll: true }));
     return () => {
+      cancelAnimationFrame(raf);
       lockScroll(false);
       previous?.focus?.({ preventScroll: true });
     };

@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { OpenProject } from '../App';
 import { COPY } from '../data/copy';
 import { useI18n } from '../lib/i18n';
-import { prefersReducedMotion } from '../lib/scroll';
+import { prefersReducedMotion, scrollToTarget } from '../lib/scroll';
 import { ProjectList } from './ProjectList';
 import { Tunnel } from './Tunnel';
 
@@ -11,6 +11,16 @@ export type WorkView = 'tunnel' | 'list';
 export function Work({ onOpen }: { onOpen: OpenProject }) {
   const { t } = useI18n();
   const [view, setView] = useState<WorkView>(() => (prefersReducedMotion() ? 'list' : 'tunnel'));
+
+  // Al cambiar de vista, la sección vuelve a su inicio (el alto de la página cambia).
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    scrollToTarget('#proyectos', 0);
+  }, [view]);
 
   const toggle = (
     <div className="seg" role="group" aria-label={t(COPY.work.view)}>

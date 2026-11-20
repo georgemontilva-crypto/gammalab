@@ -16,6 +16,8 @@ export type Project = {
   hue: number;
   /** Selectores extra que el script de capturas debe pulsar (ventanas de edad, cookies…). */
   shotClicks?: string[];
+  /** "hide": en vez de pulsar el aviso de entrada, el script lo oculta. */
+  shotGate?: string;
 };
 
 export const PROJECTS = raw as Project[];

@@ -275,7 +275,8 @@ html.has-cursor * {
   margin: -3px 0 0 -3px;
   border-radius: 50%;
   background: var(--bone);
-  mix-blend-mode: difference;
+  box-shadow: 0 0 0 1px rgba(7, 3, 10, 0.55);
+  transition: opacity 0.2s;
 }
 
 .cursor-ring {
@@ -794,6 +795,11 @@ html.has-cursor * {
   inset: 0;
   perspective: 1100px;
   perspective-origin: 50% 46%;
+}
+
+.tunnel__scene,
+.tunnel__world {
+  pointer-events: none; /* solo las ventanas reciben el puntero */
 }
 
 .tunnel__world {

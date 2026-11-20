@@ -34,6 +34,7 @@ export function Cursor() {
       const interactive = t?.closest?.('a, button, input, [role="button"], label');
       const text = tagged?.dataset.cursor ?? '';
       r.classList.toggle('is-label', !!text);
+      d.style.opacity = text ? '0' : '1';
       r.classList.toggle('is-hover', !text && !!interactive);
       if (l.textContent !== text) l.textContent = text;
     };

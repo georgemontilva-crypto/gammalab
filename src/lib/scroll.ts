@@ -22,7 +22,7 @@ export const getLenis = () => lenis;
 export function scrollToTarget(target: string | number | HTMLElement, duration = 1.2) {
   const immediate = prefersReducedMotion();
   if (lenis) {
-    lenis.scrollTo(target, { duration, immediate, force: true });
+    lenis.scrollTo(target, { duration, immediate: immediate || duration === 0, force: true });
     return;
   }
   if (typeof target === 'number') window.scrollTo({ top: target });
