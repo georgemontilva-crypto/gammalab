@@ -219,7 +219,7 @@ html.has-cursor * {
     color 0.2s;
 }
 
-.seg button:hover:not(:disabled) {
+.seg button:hover:not(:disabled):not([aria-pressed='true']) {
   color: var(--bone);
 }
 
@@ -586,6 +586,24 @@ html.has-cursor * {
   display: none;
 }
 
+.menu::after {
+  content: '';
+  position: absolute;
+  right: -20vw;
+  bottom: -10vw;
+  width: 84vw;
+  aspect-ratio: 1;
+  background: url('/favicon.svg') center / contain no-repeat;
+  opacity: 0.07;
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+.menu a {
+  position: relative;
+  z-index: 1;
+}
+
 .menu a {
   font-family: var(--display);
   font-weight: 700;
@@ -681,8 +699,8 @@ html.has-cursor * {
 .hero__title {
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(2.2rem, 6.1vw, 6.4rem);
-  line-height: 1.03;
+  font-size: clamp(2.2rem, 5.3vw, 5.7rem);
+  line-height: 1.05;
   letter-spacing: -0.03em;
 }
 
@@ -746,20 +764,34 @@ html.has-cursor * {
 }
 
 @media (max-width: 899px) {
+  .hero {
+    --mark-y: calc(84px + min(35vw, 15svh)); /* centro del isotipo, igual que en el canvas */
+    min-height: max(100svh, 700px);
+    padding-bottom: clamp(36px, 6vh, 64px);
+  }
   .hero__glow {
     left: 50%;
-    top: 27%;
-    width: 120vw;
+    top: var(--mark-y);
+    width: 130vw;
   }
   .hero__grid {
-    -webkit-mask-image: radial-gradient(ellipse 70% 34% at 50% 27%, #000 0, transparent 80%);
-    mask-image: radial-gradient(ellipse 70% 34% at 50% 27%, #000 0, transparent 80%);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(ellipse 75% 30% at 50% var(--mark-y), #000 0, transparent 80%);
+    mask-image: radial-gradient(ellipse 75% 30% at 50% var(--mark-y), #000 0, transparent 80%);
   }
   .hero__body {
     max-width: none;
   }
   .hero__title {
-    font-size: clamp(2.1rem, 10.4vw, 4.4rem);
+    font-size: clamp(1.9rem, 8.6vw, 4rem);
+  }
+  .hero__sub {
+    font-size: 14.5px;
+  }
+  .hero__cta .btn {
+    flex: 1 1 0;
+    justify-content: center;
+    min-height: 50px;
   }
   .hero__hint {
     position: static;
@@ -858,6 +890,13 @@ html.has-cursor * {
   box-shadow:
     0 0 0 1px rgba(255, 45, 85, 0.35),
     0 30px 130px -20px var(--glow);
+}
+
+.win__url {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .win__bar {
@@ -1065,12 +1104,27 @@ html.has-cursor * {
 }
 
 @media (max-width: 760px) {
+  /* En teléfono cada proyecto es una pantalla vertical con su captura móvil. */
   .win {
-    top: 41%;
-    width: 84vw;
+    top: calc(120px + (100svh - 322px) / 2);
+    width: min(78vw, calc((100svh - 352px) / 1.45));
+    border-radius: 18px;
+  }
+  .win__bar {
+    height: 30px;
+    font-size: 11px;
   }
   .win__view {
-    aspect-ratio: 1 / 1.08;
+    aspect-ratio: 1 / 1.45;
+  }
+  .tunnel__title h2 {
+    font-size: 15.5vw;
+  }
+  .hud__kind span {
+    display: none;
+  }
+  .hud__name {
+    font-size: clamp(1.7rem, 8vw, 2.6rem);
   }
   .tunnel__top {
     top: 76px;
@@ -1081,10 +1135,17 @@ html.has-cursor * {
     align-items: stretch;
     gap: 14px;
   }
+  .hud {
+    bottom: max(22px, env(safe-area-inset-bottom));
+  }
   .hud__side {
     grid-template-columns: auto 1fr;
     align-items: center;
     justify-items: stretch;
+  }
+  .hud__actions .btn--solid {
+    min-height: 50px;
+    padding-inline: 1.6em;
   }
   .hud__actions {
     justify-content: flex-end;
@@ -1165,7 +1226,7 @@ html.has-cursor * {
 
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 12rem 15rem;
+  grid-template-columns: minmax(0, 1fr) 11rem minmax(0, 23rem);
   align-items: baseline;
   gap: 24px;
   width: 100%;
@@ -1194,8 +1255,16 @@ html.has-cursor * {
   transform: translateX(14px);
 }
 
+.row__kind {
+  white-space: nowrap;
+}
+
 .row__domain {
+  min-width: 0;
+  overflow: hidden;
   text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .peek {
@@ -1234,14 +1303,12 @@ html.has-cursor * {
 
 @media (max-width: 760px) {
   .row {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr);
     gap: 4px 16px;
+    font-size: 12.5px;
   }
   .row__name {
     grid-column: 1 / -1;
-  }
-  .row__domain {
-    text-align: right;
   }
 }
 
@@ -1442,32 +1509,80 @@ html.has-cursor * {
 }
 
 @media (max-width: 899px) {
+  /* Arriba: cerrar y cambiar de proyecto. Debajo: datos breves. El resto es la web. */
   .case {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(0, 1fr);
   }
   .case__info {
-    gap: 12px;
-    padding-bottom: 14px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 6px 12px;
+    padding: max(8px, env(safe-area-inset-top)) 16px 12px;
     border-right: 0;
-    border-bottom: 1px solid var(--line);
     overflow: visible;
   }
+  .case__close {
+    grid-area: 1 / 1;
+  }
+  .case__close kbd {
+    display: none;
+  }
+  .case__nav {
+    grid-area: 1 / 2;
+    justify-self: end;
+    gap: 0;
+    padding-top: 0;
+    border-top: 0;
+    margin-right: -0.9em;
+  }
   .case__text {
-    gap: 10px;
+    grid-area: 2 / 1 / 3 / 3;
+    gap: 8px;
     margin-block: 0;
   }
+  .case__name {
+    font-size: clamp(1.5rem, 7.4vw, 2.4rem);
+  }
   .case__blurb {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
     font-size: 13.5px;
+    line-height: 1.55;
   }
   .case__text .tags {
     display: none;
   }
-  .case__nav {
-    padding-top: 10px;
+  .case__visit {
+    justify-self: stretch;
+    justify-content: space-between;
+    min-height: 50px;
+    margin-top: 4px;
   }
+  .case__domain {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .frame {
+    gap: 10px;
+    padding: 0 16px max(14px, env(safe-area-inset-bottom));
+  }
+  .frame__bar {
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .frame__url,
   .frame__note {
     display: none;
+  }
+  .frame--mobile .frame__view {
+    width: 100%;
+    border-radius: 18px;
   }
 }
 
@@ -1877,11 +1992,56 @@ html.has-cursor * {
 }
 
 @media (max-width: 760px) {
+  .section,
+  .list {
+    padding-block: 84px;
+  }
+  .h2 {
+    font-size: clamp(1.75rem, 8.2vw, 2.6rem);
+  }
+  .term__body {
+    height: clamp(260px, 42svh, 400px);
+    padding: 14px 16px 4px;
+    font-size: 13px;
+  }
+  .term__prompt {
+    padding: 10px 16px 14px;
+  }
+  .term__chips button {
+    min-height: 42px;
+  }
+  .services h3 {
+    font-size: clamp(1.35rem, 6.6vw, 2rem);
+  }
+  .contact {
+    min-height: 0;
+    gap: 72px;
+    padding-top: 96px;
+  }
+  .contact__title {
+    font-size: clamp(2.2rem, 11.2vw, 4rem);
+  }
+  .contact__actions {
+    flex-direction: column;
+  }
+  .contact__actions .btn {
+    justify-content: space-between;
+  }
   .contact__mark {
-    right: -30vw;
-    top: 64%;
-    width: 95vw;
-    opacity: 0.12;
+    right: -34vw;
+    top: auto;
+    bottom: 60px;
+    width: 100vw;
+    transform: rotate(-12deg);
+    opacity: 0.1;
+  }
+  .foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .foot .btn {
+    margin-left: -1em;
   }
 }
 

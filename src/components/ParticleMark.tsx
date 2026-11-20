@@ -52,9 +52,9 @@ export function ParticleMark({ active }: { active: boolean }) {
       canvas.height = Math.round(H * dpr);
 
       const wide = W >= 900;
-      const size = Math.round(wide ? Math.min(W * 0.36, H * 0.68) : Math.min(W * 0.6, H * 0.3));
+      const size = Math.round(wide ? Math.min(W * 0.36, H * 0.68) : Math.min(W * 0.7, H * 0.3));
       const cx = wide ? W * 0.74 : W * 0.5;
-      const cy = wide ? H * 0.5 : H * 0.27;
+      const cy = wide ? H * 0.5 : 84 + size / 2;
       cell = Math.max(3, Math.round(size / 86));
 
       const off = document.createElement('canvas');

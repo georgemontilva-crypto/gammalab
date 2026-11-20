@@ -22,7 +22,7 @@ const list = only.length ? projects.filter((p) => only.includes(p.slug)) : proje
 
 // Botones típicos de ventanas de edad, cookies y avisos.
 const GATE =
-  "^(yes|sí|si|enter|entrar|i am (over )?(18|21)|i'm (over )?(18|21)|i am of legal age|yes,? i am|over (18|21)|21\\+|18\\+|i agree|agree|accept|accept all|allow all|aceptar|acepto|confirm|continue|continuar|got it|ok|soy mayor|tengo)";
+  "^(hell |oh |heck )?(yes|sí|si|enter|entrar|i am (over )?(18|21)|i'm (over )?(18|21)|i am of legal age|yes,? i am|over (18|21)|21\\+|18\\+|i agree|agree|accept|accept all|allow all|aceptar|acepto|confirm|continue|continuar|got it|ok|soy mayor|tengo)";
 
 // Para webs cuyo aviso no se puede cerrar con un clic: oculta lo que tape la pantalla.
 async function hideOverlays(page) {

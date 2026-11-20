@@ -12,7 +12,7 @@ const N = PROJECTS.length;
 const GAP = 1500; // separación en profundidad entre ventanas (px)
 const START = 1200; // distancia a la primera ventana al entrar
 const SPAN = (N - 1) * GAP + START;
-const STEP_VH = 0.8; // pantallas de scroll por proyecto
+const STEP_VH = 0.62; // pantallas de scroll por proyecto
 const DEPTH = 3200; // profundidad del campo de estelas
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);

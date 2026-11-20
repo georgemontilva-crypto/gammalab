@@ -13,10 +13,10 @@ export const COPY = {
     lang: c('Cambiar idioma a inglés', 'Switch language to Spanish'),
   },
   hero: {
-    lines: [c('Webs que', 'Websites'), c('no parecen', "that don't look"), c('plantilla.', 'like templates.')],
+    lines: [c('Desarrollo web', 'Custom web'), c('y plataformas', 'development'), c('a medida.', 'and platforms.')],
     sub: c(
-      'Gamma Lab es un estudio de desarrollo. Llevamos 8 años construyendo tiendas, plataformas y webs de marca en código propio.',
-      "Gamma Lab is a development studio. For 8 years we've built stores, platforms and brand sites in custom code.",
+      'Gamma Lab es un estudio de desarrollo con 8 años de trayectoria. Diseñamos y programamos tiendas online, plataformas y sitios de marca.',
+      'Gamma Lab is a development studio with 8 years of experience. We design and build online stores, platforms and brand sites.',
     ),
     cta: c('Ver proyectos', 'See projects'),
     cta2: c('Escribirnos', 'Write to us'),
