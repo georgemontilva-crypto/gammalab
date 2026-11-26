@@ -173,8 +173,8 @@
     "url": "https://shred-production-cb30.up.railway.app/",
     "kind": { "es": "Sitio de marca", "en": "Brand site" },
     "blurb": {
-      "es": "Web informativa de la marca y de sus productos.",
-      "en": "An informational site for the brand and its products."
+      "es": "Web de la marca y de su grinder de aluminio, con selector de acabados.",
+      "en": "A site for the brand and its aluminum grinder, with a finish picker."
     },
     "tags": ["Marca", "Railway"],
     "hue": 120
@@ -193,7 +193,7 @@
   },
   {
     "slug": "joyeria",
-    "name": "Joyería",
+    "name": "Madison D'Or",
     "url": "https://joyeria-production-f3e9b21a.up.railway.app/",
     "kind": { "es": "Tienda online", "en": "Online store" },
     "blurb": {
@@ -205,7 +205,7 @@
   },
   {
     "slug": "peptiva",
-    "name": "Peptiva",
+    "name": "Peptiva Supplies",
     "url": "https://peptiva-store-production.up.railway.app/",
     "kind": { "es": "Tienda online", "en": "Online store" },
     "blurb": {
@@ -217,7 +217,7 @@
   },
   {
     "slug": "purple",
-    "name": "Purple",
+    "name": "Purple Organics",
     "url": "https://purple-silly-production.up.railway.app/",
     "kind": { "es": "Tienda online", "en": "Online store" },
     "blurb": {
@@ -225,6 +225,7 @@
       "en": "The brand's online store, with its own catalog and cart."
     },
     "tags": ["E-commerce", "Railway"],
-    "hue": 270
+    "hue": 270,
+    "shotGate": "hide"
   }
 ]
