@@ -142,5 +142,89 @@
     },
     "tags": ["Plataforma", "Salud"],
     "hue": 230
+  },
+  {
+    "slug": "aether",
+    "name": "Aether",
+    "url": "https://aetherstore.up.railway.app/",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Tienda de accesorios de estética gótica, con catálogo y compra en línea.",
+      "en": "A store for goth-style accessories, with a catalog and online checkout."
+    },
+    "tags": ["E-commerce", "Railway"],
+    "hue": 280
+  },
+  {
+    "slug": "dominator",
+    "name": "Dominator",
+    "url": "https://getdominator.com/",
+    "kind": { "es": "Sitio de marca", "en": "Brand site" },
+    "blurb": {
+      "es": "Web informativa de la marca, con reportes de laboratorio por producto y panel de administración.",
+      "en": "An informational brand site, with lab reports per product and an admin panel."
+    },
+    "tags": ["Marca", "Reportes de laboratorio", "Panel admin"],
+    "hue": 5
+  },
+  {
+    "slug": "shred-master",
+    "name": "Shred Master",
+    "url": "https://shred-production-cb30.up.railway.app/",
+    "kind": { "es": "Sitio de marca", "en": "Brand site" },
+    "blurb": {
+      "es": "Web informativa de la marca y de sus productos.",
+      "en": "An informational site for the brand and its products."
+    },
+    "tags": ["Marca", "Railway"],
+    "hue": 120
+  },
+  {
+    "slug": "pastinos",
+    "name": "Pastinos",
+    "url": "https://pastinos-production.up.railway.app/",
+    "kind": { "es": "Restaurante", "en": "Restaurant" },
+    "blurb": {
+      "es": "Web de un restaurante de pastas y vinos, rehecha desde cero.",
+      "en": "A website for a pasta and wine restaurant, rebuilt from scratch."
+    },
+    "tags": ["Restaurante", "Railway"],
+    "hue": 12
+  },
+  {
+    "slug": "joyeria",
+    "name": "Joyería",
+    "url": "https://joyeria-production-f3e9b21a.up.railway.app/",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Web elegante para una joyería, con catálogo y pago en línea.",
+      "en": "An elegant website for a jewelry store, with a catalog and online payment."
+    },
+    "tags": ["E-commerce", "Stripe"],
+    "hue": 45
+  },
+  {
+    "slug": "peptiva",
+    "name": "Peptiva",
+    "url": "https://peptiva-store-production.up.railway.app/",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Tienda de péptidos de investigación, migrada a código propio.",
+      "en": "A research-peptides store, migrated to custom code."
+    },
+    "tags": ["E-commerce", "Railway"],
+    "hue": 190
+  },
+  {
+    "slug": "purple",
+    "name": "Purple",
+    "url": "https://purple-silly-production.up.railway.app/",
+    "kind": { "es": "Tienda online", "en": "Online store" },
+    "blurb": {
+      "es": "Tienda online de la marca, con catálogo y carrito propios.",
+      "en": "The brand's online store, with its own catalog and cart."
+    },
+    "tags": ["E-commerce", "Railway"],
+    "hue": 270
   }
 ]
